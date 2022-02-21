@@ -1,0 +1,38 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: workeracoesdotnet6 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workeracoesdotnet6
+  template:
+    metadata:
+      labels:
+        app: workeracoesdotnet6 
+    spec:
+      containers:
+        - name: workeracoesdotnet6 
+          image: canaldotnet.azurecr.io/workeracoesdotnet6
+          ports:
+          - containerPort: 80
+          env:
+          - name: MongoDBConnection
+            valueFrom:
+              secretKeyRef:
+                name: workeracoes-secret
+                key: MongoConnection
+          - name: ApacheKafka__Topic
+            value: topic-acoesprod
+          - name: MongoDatabase
+            value: DBAcoesProd
+          - name: MongoCollection
+            value: HistoricoAcoes
+          - name: ApacheKafka__GroupId
+            value: workeracoesprod
+          - name: ApacheKafka__Broker
+            valueFrom:
+              secretKeyRef:
+                name: workeracoes-secret
+                key: KafkaBroker
